@@ -29,6 +29,9 @@ if (process.env.SKIP_PREFLIGHT_CHECK !== 'true') {
 }
 const verifyTypeScriptSetup = require('./utils/verifyTypeScriptSetup');
 verifyTypeScriptSetup();
+
+const verifyBuckleScript = require('./utils/verifyBuckleScriptSetup');
+verifyBuckleScript();
 // @remove-on-eject-end
 
 const path = require('path');

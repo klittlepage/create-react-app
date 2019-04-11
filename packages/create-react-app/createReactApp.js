@@ -79,6 +79,7 @@ const program = new commander.Command(packageJson.name)
   .option('--use-npm')
   .option('--use-pnp')
   .option('--typescript')
+  .option('--bucklescript')
   .allowUnknownOption()
   .on('--help', () => {
     console.log(`    Only ${chalk.green('<project-directory>')} is required.`);
@@ -158,6 +159,12 @@ if (typeof projectName === 'undefined') {
   process.exit(1);
 }
 
+if (program.typescript && program.bucklescript) {
+  console.error('Options --typescript and --bucklescript are mutually ' +
+                'exclusive');
+  process.exit(1);
+}
+
 function printValidationResults(results) {
   if (typeof results !== 'undefined') {
     results.forEach(error => {
@@ -181,6 +188,7 @@ createApp(
   program.useNpm,
   program.usePnp,
   program.typescript,
+  program.bucklescript,
   hiddenProgram.internalTestingTemplate
 );
 
@@ -191,6 +199,7 @@ function createApp(
   useNpm,
   usePnp,
   useTypescript,
+  useBuckleScript,
   template
 ) {
   const root = path.resolve(name);
@@ -296,7 +305,8 @@ function createApp(
     template,
     useYarn,
     usePnp,
-    useTypescript
+    useTypescript,
+    useBuckleScript
   );
 }
 
@@ -380,7 +390,8 @@ function run(
   template,
   useYarn,
   usePnp,
-  useTypescript
+  useTypescript,
+  useBuckleScript
 ) {
   getInstallPackage(version, originalDirectory).then(packageToInstall => {
     const allDependencies = ['react', 'react-dom', packageToInstall];
@@ -393,6 +404,13 @@ function run(
         // TODO: get version of Jest being used instead of installing latest
         '@types/jest',
         'typescript'
+      );
+    }
+
+    if (useBuckleScript) {
+      allDependencies.push(
+        'bs-platform',
+        'reason-react'
       );
     }
 
