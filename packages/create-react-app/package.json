@@ -1,5 +1,5 @@
 {
-  "name": "create-react-app",
+  "name": "create-react-app-bs",
   "version": "2.1.8",
   "keywords": [
     "react"
@@ -19,7 +19,7 @@
     "yarn.lock.cached"
   ],
   "bin": {
-    "create-react-app": "./index.js"
+    "create-react-app-bs": "./index.js"
   },
   "dependencies": {
     "chalk": "1.1.3",

@@ -22,6 +22,7 @@ const spawn = require('react-dev-utils/crossSpawn');
 const { defaultBrowsers } = require('react-dev-utils/browsersHelper');
 const os = require('os');
 const verifyTypeScriptSetup = require('./utils/verifyTypeScriptSetup');
+const verifyBuckleScriptSetup = require('./utils/verifyBuckleScriptSetup');
 
 function isInGitRepository() {
   try {
@@ -92,6 +93,7 @@ module.exports = function(
   appPackage.dependencies = appPackage.dependencies || {};
 
   const useTypeScript = appPackage.dependencies['typescript'] != null;
+  const useBuckleScript = appPackage.dependencies['bs-platform'] != null;
 
   // Setup the script rules
   appPackage.scripts = {
@@ -99,6 +101,9 @@ module.exports = function(
     build: 'react-scripts build',
     test: 'react-scripts test',
     eject: 'react-scripts eject',
+    "build:bsb": "bsb -make-world",
+    "start:bsb": "bsb -make-world -w",
+    "clean:bsb": "bsb -clean-world"
   };
 
   // Setup the eslint config
@@ -125,7 +130,8 @@ module.exports = function(
   // Copy the files for the user
   const templatePath = template
     ? path.resolve(originalDirectory, template)
-    : path.join(ownPath, useTypeScript ? 'template-typescript' : 'template');
+    : path.join(ownPath, useTypeScript ? 'template-typescript' : 
+        useBuckleScript ? 'template-bucklescript' : 'template');
   if (fs.existsSync(templatePath)) {
     fs.copySync(templatePath, appPath);
   } else {
@@ -199,6 +205,10 @@ module.exports = function(
     verifyTypeScriptSetup();
   }
 
+  if (useBuckleScript) {
+    verifyBuckleScriptSetup();
+  }
+
   if (tryGitInit(appPath)) {
     console.log();
     console.log('Initialized a git repository.');
@@ -242,6 +252,22 @@ module.exports = function(
     '    and scripts into the app directory. If you do this, you can’t go back!'
   );
   console.log();
+
+  if (useBuckleScript) {
+    console.log(chalk.cyan(`  ${displayedCommand} build:bsb`));
+    console.log('    Builds all bucklescript files (.re, .ml).');
+    console.log();
+
+    console.log(chalk.cyan(`  ${displayedCommand} start:bsb`));
+    console.log('    Builds all bucklescript files (.re, .ml)');
+    console.log('    and watches them for changes');
+    console.log();
+
+    console.log(chalk.cyan(`  ${displayedCommand} clean:bsb`));
+    console.log('    Cleans all files created by bsb/bucklescript');
+    console.log();
+  }
+
   console.log('We suggest that you begin by typing:');
   console.log();
   console.log(chalk.cyan('  cd'), cdpath);

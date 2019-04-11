@@ -30,6 +30,9 @@ if (process.env.SKIP_PREFLIGHT_CHECK !== 'true') {
 }
 const verifyTypeScriptSetup = require('./utils/verifyTypeScriptSetup');
 verifyTypeScriptSetup();
+
+const verifyBuckleScriptSetup = require('./utils/verifyBuckleScriptSetup');
+verifyBuckleScriptSetup();
 // @remove-on-eject-end
 
 const jest = require('jest');
